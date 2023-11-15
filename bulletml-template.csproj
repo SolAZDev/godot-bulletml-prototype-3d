@@ -1,4 +1,4 @@
-<Project Sdk="Godot.NET.Sdk/4.1.2">
+<Project Sdk="Godot.NET.Sdk/4.1.3">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
@@ -9,7 +9,7 @@
     <PackageReference Include="NUnit" Version="3.13.3" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BulletMLLib.Tests\Content\AccelAbs.xml">
+    <!-- <Content Include="BulletMLLib.Tests\Content\AccelAbs.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BulletMLLib.Tests\Content\AccelRel.xml">
@@ -42,7 +42,7 @@
     <Content Include="BulletMLLib.Tests\Content\ActionRepeatOnce.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="BulletMLLib.Tests\Content\aim.xml">
+    <Content Include="BulletMLLib.Tests\Content\Aim.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="BulletMLLib.Tests\Content\allround.xml">
@@ -185,6 +185,6 @@
     </Content>
     <Content Include="BulletMLLib.Tests\Content\WaitZero.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Content> -->
   </ItemGroup>
 </Project>

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dx06ravulaiur"]
+
+[ext_resource type="Texture2D" uid="uid://df8yamhadj7jv" path="res://Example/Player/textures.png" id="1_jx02m"]
+[ext_resource type="Script" path="res://Example/Player/Player.cs" id="2_7eqpj"]
+
+[node name="Sprite3D" type="Sprite3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+texture = ExtResource("1_jx02m")
+region_enabled = true
+region_rect = Rect2(128, 56, 16, 16)
+script = ExtResource("2_7eqpj")

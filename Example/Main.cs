@@ -5,113 +5,115 @@ using Godot;
 
 namespace bulletmltemplate;
 
-public partial class Main : Node2D
+public partial class Main : Node3D
 {
-    [Export]
-    private PackedScene playerScene;
+	[Export]
+	private PackedScene playerScene;
 
-    [Export]
-    private PackedScene bulletScene;
+	[Export]
+	private PackedScene bulletScene;
 
-    // TODO: GameManager/Globals
-    public static float ViewportWidth => Instance.GetViewportRect().Size.X;
-    public static float ViewportHeight => Instance.GetViewportRect().Size.Y;
-    public static Main Instance { get; private set; }
+	[Export]
+	public Node3D playerInstance; // TODO: PlayerManager
+	[Export] public Label label;
 
-    private readonly List<BulletPattern> myPatterns = new();
+	// TODO: GameManager/Globals
+	// public static float ViewportWidth => Instance.GetViewportRect().Size.X;
+	// public static float ViewportHeight => Instance.GetViewportRect().Size.Y;
+	public static Main Instance { get; private set; }
 
-    private MoveManager moveManager;
+	private readonly List<BulletPattern> myPatterns = new();
 
-    private int currentPattern;
-    private Mover topLevelBullet;
-    private Sprite2D playerInstance; // TODO: PlayerManager
+	private MoveManager moveManager;
 
-    public Main()
-    {
-        Instance = this;
-    }
+	private int currentPattern;
+	private Mover topLevelBullet;
 
-    private Vector2 GetPlayerPosition()
-    {
-        return playerInstance?.Position
-            ?? new Vector2(GetViewportRect().Size.X / 2f, GetViewportRect().Size.Y - 100f);
-    }
+	public Main()
+	{
+		Instance = this;
+	}
 
-    public override void _Ready()
-    {
-        base._Ready();
+	private Vector2 GetPlayerPosition()
+	{
+		return new Vector2(playerInstance.Position.X, playerInstance.Position.Z);
+	}
 
-        moveManager = new(GetPlayerPosition, bulletScene);
+	public override void _Ready()
+	{
+		base._Ready();
 
-        GameManager.GameDifficulty = () => 1.0f;
+		moveManager = new(GetPlayerPosition, bulletScene);
 
-        foreach (var source in Directory.GetFiles("./samples", "*.xml"))
-        {
-            // load the pattern
-            var pattern = new BulletPattern();
-            pattern.ParseXML(source);
-            myPatterns.Add(pattern);
-        }
+		GameManager.GameDifficulty = () => 1.0f;
 
-        AddBullet();
+		foreach (var source in Directory.GetFiles("./samples", "*.xml"))
+		{
+			// load the pattern
+			var pattern = new BulletPattern();
+			pattern.ParseXML(source);
+			myPatterns.Add(pattern);
+		}
 
-        // Add a dummy player sprite
-        var scene = ResourceLoader.Load<PackedScene>(playerScene.ResourcePath);
-        if (scene.Instantiate() is not Sprite2D player)
-            return;
-        playerInstance = player;
-        player.Position = new(GetViewportRect().Size.X / 2f, GetViewportRect().Size.Y - 100f);
-        AddChild(player);
-    }
+		AddBullet();
 
-    public override void _Process(double bigDelta)
-    {
-        var delta = (float)bigDelta;
-        base._Process(delta);
+		// Add a dummy player sprite
+		// var scene = ResourceLoader.Load<PackedScene>(playerScene.ResourcePath);
+		// if (scene.Instantiate() is not Sprite2D player)
+		// 	return;
+		// playerInstance = player;
+		// player.Position = new(GetViewportRect().Size.X / 2f, GetViewportRect().Size.Y - 100f);
+		// AddChild(player);
+	}
 
-        var label = GetNode<Label>("Control/VBoxContainer/PlayerPositionLabel");
-        label.Text = $"Player: ({playerInstance.Position.X}, {playerInstance.Position.Y})";
+	public override void _Process(double bigDelta)
+	{
+		var delta = (float)bigDelta;
+		base._Process(delta);
 
-        if (Input.IsActionJustPressed("ui_select"))
-        {
-            currentPattern++;
+		// var label = GetNode<Label>("Control/VBoxContainer/PlayerPositionLabel");
+		// label.Text = $"Player: ({playerInstance.Position.X}, {playerInstance.Position.Y})";
 
-            AddBullet();
+		if (Input.IsActionJustPressed("ui_select"))
+		{
+			currentPattern++;
 
-            return;
-        }
+			AddBullet();
 
-        moveManager.Update(delta);
+			return;
+		}
 
-        // TODO: physics?
+		moveManager.Update(delta);
 
-        moveManager.PostUpdate();
-    }
+		// TODO: physics?
 
-    private void AddBullet()
-    {
-        var label = GetNode<Label>("Control/VBoxContainer/BulletPatternLabel");
-        label.Text = $"Pattern: {myPatterns[currentPattern % myPatterns.Count].Filename}";
-        label.Show();
+		moveManager.PostUpdate();
+	}
 
-        // clear out all the bullets
-        foreach (var child in GetChildren())
-        {
-            if (child is Sprite2D)
-                continue; // HACK: the player
+	private void AddBullet()
+	{
+		label.Text = $"Pattern: {myPatterns[currentPattern % myPatterns.Count].Filename}";
+		label.Show();
 
-            // TODO: object pooling
-            (child as Node2D)?.QueueFree();
-        }
+		// clear out all the bullets
+		foreach (var child in GetChildren())
+		{
+			if (child is Player) 
+				continue; // HACK: the player
 
-        moveManager.Clear();
+			// TODO: object pooling
+			(child as Node3D)?.QueueFree();
+		}
 
-        // add a new bullet in the center of the screen (ish)
-        topLevelBullet = (Mover)moveManager.CreateTopBullet();
-        topLevelBullet.Position = new(
-            GetViewportRect().Size.X / 2f,
-            GetViewportRect().Size.Y / 2f - 100f
-        );
-        topLevelBullet.InitTopNode(myPatterns[currentPattern % myPatterns.Count].RootNode);
-    }
+		moveManager.Clear();
+
+		// add a new bullet in the center of the screen (ish)
+		topLevelBullet = (Mover)moveManager.CreateTopBullet();
+		topLevelBullet.Position = new Vector2(Position.X, Position.Z);
+		// topLevelBullet.Position = new(
+		// 	GetViewportRect().Size.X / 2f,
+		// 	GetViewportRect().Size.Y / 2f - 100f
+		// );
+		topLevelBullet.InitTopNode(myPatterns[currentPattern % myPatterns.Count].RootNode);
+	}
 }

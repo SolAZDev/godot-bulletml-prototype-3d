@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://giyc7txjxh1j"]
+
+[ext_resource type="Texture2D" uid="uid://ce0uacckuahn1" path="res://Example/Bullet/bullet.png" id="1_e4eda"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1rsa7"]
+
+[node name="Sprite3D" type="Sprite3D"]
+billboard = 1
+texture = ExtResource("1_e4eda")
+metadata/shape = SubResource("SphereShape3D_1rsa7")

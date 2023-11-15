@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=3 uid="uid://cp6rwxrd75qxe"]
+
+[ext_resource type="Script" path="res://Example/Main.cs" id="1_yeb8j"]
+[ext_resource type="PackedScene" uid="uid://dx06ravulaiur" path="res://Example/Player/Player3D.tscn" id="2_a27el"]
+[ext_resource type="PackedScene" uid="uid://giyc7txjxh1j" path="res://Example/Bullet/Bullet3D.tscn" id="3_mm1lk"]
+[ext_resource type="Texture2D" uid="uid://ce0uacckuahn1" path="res://Example/Bullet/bullet.png" id="4_ut45i"]
+
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("playerInstance", "label")]
+script = ExtResource("1_yeb8j")
+playerScene = ExtResource("2_a27el")
+bulletScene = ExtResource("3_mm1lk")
+playerInstance = NodePath("Sprite3D2")
+label = NodePath("SubViewport/Control/VBoxContainer/BulletPatternLabel")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+modulate = Color(0, 0, 0, 1)
+pixel_size = 0.2
+texture = ExtResource("4_ut45i")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Control" type="Control" parent="SubViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewport/Control"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 148.0
+offset_bottom = 71.0
+metadata/_edit_group_ = true
+
+[node name="BulletPatternLabel" type="Label" parent="SubViewport/Control/VBoxContainer"]
+layout_mode = 2
+text = "BULLET PATTERN"
+
+[node name="PlayerPositionLabel" type="Label" parent="SubViewport/Control/VBoxContainer"]
+layout_mode = 2
+text = "Player: (x, y)"
+
+[node name="Sprite3D2" parent="." instance=ExtResource("2_a27el")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 2.53112)
+movementSpeed = 10.0
+
+[node name="Camera3D" type="Camera3D" parent="Sprite3D2"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, -3, 3)
