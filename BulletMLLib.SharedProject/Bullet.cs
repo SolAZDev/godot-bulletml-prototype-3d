@@ -12,7 +12,7 @@ namespace BulletMLLib.SharedProject;
 /// This is the bullet class that outside assemblies will interact with.
 /// Just inherit from this class and override the abstract functions!
 /// </summary>
-public abstract class Bullet : IBullet
+public abstract partial class Bullet : Node3D, IBullet
 {
     #region Members
 

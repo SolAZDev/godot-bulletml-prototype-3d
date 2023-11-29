@@ -272,6 +272,9 @@ public class FireTask : BulletMLTask
     public override ERunStatus Run(Bullet bullet)
     {
         //Create the new bullet
+        BMLBullet refBul = bullet as BMLBullet;
+        //This is probably written incorrectly.
+        (bullet.MyBulletManager as BMLBulletManager).AddToQueue(refBul.emitter, refBul.Name);
         var newBullet = bullet.MyBulletManager.CreateBullet();
 
         if (newBullet == null)
