@@ -15,4 +15,7 @@ public class BulletNode : BulletMLNode
     /// <param name="eNodeType">the node type.</param>
     public BulletNode(ENodeName eNodeType)
         : base(eNodeType) { }
+
+    public float Lifetime = 60;
+    public int Damage = 1;
 }

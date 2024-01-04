@@ -2,6 +2,7 @@ using BulletMLLib.SharedProject;
 using Godot;
 public partial class BMLBullet : Bullet
 {
+    [Export] public Shape3D shape;
     public BMLEmitter emitter;
     public Node3D bulletNode;
     /// <summary>
@@ -11,10 +12,6 @@ public partial class BMLBullet : Bullet
     public int damage = 1;
     Vector2 pos;
     bool vanished = false;
-
-    public BMLBullet(IBulletManager manager, BMLEmitter emitter, string bulletName, float lifetime) : base(manager) { 
-        this.emitter = emitter;
-    }
     public override float X
     {
         get => pos.X;
@@ -23,7 +20,7 @@ public partial class BMLBullet : Bullet
             pos.X = value;
             bool xy = false;
             if (emitter != null) { xy = emitter.UseXY; }
-            bulletNode.GlobalPosition = new Vector3(pos.X, xy ? pos.Y : bulletNode.GlobalPosition.Y, xy ? bulletNode.GlobalPosition.Z : pos.Y);
+            GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
         }
     }
     public override float Y
@@ -34,7 +31,7 @@ public partial class BMLBullet : Bullet
             pos.Y = value;
             bool xy = false;
             if (emitter != null) { xy = emitter.UseXY; }
-            bulletNode.GlobalPosition = new Vector3(pos.X, xy ? pos.Y : bulletNode.GlobalPosition.Y, xy ? bulletNode.GlobalPosition.Z : pos.Y);
+            GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
 
         }
     }
@@ -45,16 +42,9 @@ public partial class BMLBullet : Bullet
         set
         {
             vanished = value;
-            bulletNode.Visible = !value;
-            bulletNode.ProcessMode = value ? Node.ProcessModeEnum.Inherit : Node.ProcessModeEnum.Disabled;
+            Visible = !value;
+            ProcessMode = value ? Node.ProcessModeEnum.Inherit : Node.ProcessModeEnum.Disabled;
         }
-    }
-
-    public void Init(BMLEmitter emitter, string bulletName, float lifetime)
-    {
-        this.emitter = emitter;
-        var scene = BMLBulletManager.GetInstance().GetBulletNode(emitter, bulletName);
-        Vanished=true; 
     }
 
     public override void PostUpdate() {
