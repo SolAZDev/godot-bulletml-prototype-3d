@@ -55,7 +55,7 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 	}
 
 	public override void _Process(double delta){
-		GD.Print(topBullets.Count);
+		// GD.Print(topBullets.Count);
 		foreach(var set in bulletSets){
 			set.Value.ForEach(bullet => {
 				bullet.Update();
@@ -81,7 +81,8 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// This will probaly have a race condition
 		var bulletToSpawn = bulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name);
-		bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
+		// bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
+		// (bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
 		(bullet as Bullet).Scale=speedScale;
 		(bullet as Bullet).TimeSpeed=timeSpeed;
 		return bullet as IBullet;
@@ -92,7 +93,10 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// This will probaly have a race condition
 		var bulletToSpawn = topBulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name, true);
+		GD.Print(bulletToSpawn.Emitter.Name);
 		bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
+		(bullet as Bullet).Scale=speedScale;
+		(bullet as Bullet).TimeSpeed=timeSpeed;
 		return bullet as IBullet;
 	}
 

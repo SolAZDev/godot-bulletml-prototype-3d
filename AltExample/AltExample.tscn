@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cocm7elvcw5tt"]
+[gd_scene load_steps=6 format=3 uid="uid://cocm7elvcw5tt"]
 
 [ext_resource type="Script" path="res://AltExample/BMLBulletManager.cs" id="1_5hjiy"]
 [ext_resource type="PackedScene" uid="uid://dx06ravulaiur" path="res://Example/Player/Player3D.tscn" id="2_sdatu"]
 [ext_resource type="Script" path="res://AltExample/BMLEmitter.cs" id="3_pqa5n"]
 [ext_resource type="PackedScene" uid="uid://giyc7txjxh1j" path="res://Example/Bullet/Bullet3D.tscn" id="4_7b5dd"]
+[ext_resource type="Texture2D" uid="uid://df8yamhadj7jv" path="res://Example/Player/textures.png" id="5_cjg0g"]
 
 [node name="Node3D" type="Node3D"]
 
@@ -21,32 +22,31 @@ transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 
 
 [node name="ShooterA" type="Node3D" parent="." node_paths=PackedStringArray("playerInstance")]
 script = ExtResource("3_pqa5n")
-BulletMLFile = "./samples/[1943]_rolling_fire.xml"
+BulletMLFile = "./samples/Basic.xml"
 AutoFire = true
 playerInstance = NodePath("../Player")
-UseXY = true
 bullets = {
 "default": ExtResource("4_7b5dd")
 }
+
+[node name="Sprite3D" type="Sprite3D" parent="ShooterA"]
+billboard = 2
+texture = ExtResource("5_cjg0g")
+region_enabled = true
+region_rect = Rect2(20, 2, 16, 16)
 
 [node name="ShooterA2" type="Node3D" parent="." node_paths=PackedStringArray("playerInstance")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
 script = ExtResource("3_pqa5n")
-BulletMLFile = "./samples/[1943]_rolling_fire.xml"
+BulletMLFile = "./samples/Basic.xml"
 AutoFire = true
 playerInstance = NodePath("../Player")
-UseXY = true
 bullets = {
 "default": ExtResource("4_7b5dd")
 }
 
-[node name="ShooterA3" type="Node3D" parent="." node_paths=PackedStringArray("playerInstance")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -1)
-script = ExtResource("3_pqa5n")
-BulletMLFile = "./samples/[1943]_rolling_fire.xml"
-AutoFire = true
-playerInstance = NodePath("../Player")
-UseXY = true
-bullets = {
-"default": ExtResource("4_7b5dd")
-}
+[node name="Sprite3D" type="Sprite3D" parent="ShooterA2"]
+billboard = 2
+texture = ExtResource("5_cjg0g")
+region_enabled = true
+region_rect = Rect2(20, 2, 16, 16)

@@ -52,4 +52,9 @@ public partial class BMLBullet : Bullet
         lifetime--;
         if(lifetime<=0) Vanished=true;
      }
+
+    public void SetStartPos(Vector3 pos){
+        this.X = pos.X;
+        this.Y = emitter.UseXY?pos.Y:pos.Z;
+    }
 }
