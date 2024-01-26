@@ -261,13 +261,14 @@ public abstract partial class Bullet : Node3D, IBullet
 	{
 		//get the player position so we can aim at that little fucker
 		Debug.Assert(null != MyBulletManager);
-		var shipPos = MyBulletManager.PlayerPosition(this);
+		return (MyBulletManager as BMLBulletManager).GetBulletAimDir(this);
+		// var shipPos = MyBulletManager.PlayerPosition(this);
 
-		//get our position
-		var pos = new Vector2(X, Y);
+		// //get our position
+		// var pos = new Vector2(X-GlobalPosition.X, Y-);
 
-		//get the angle at that dude
-		return (shipPos - pos).Angle();
+		// //get the angle at that dude
+		// return (shipPos - pos).Angle();
 	}
 
 	/// <summary>

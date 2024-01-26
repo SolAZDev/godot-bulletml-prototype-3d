@@ -82,7 +82,7 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		var bulletToSpawn = bulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name);
 		// bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
-		// (bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
+		(bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
 		(bullet as Bullet).Scale=speedScale;
 		(bullet as Bullet).TimeSpeed=timeSpeed;
 		return bullet as IBullet;
@@ -93,8 +93,9 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// This will probaly have a race condition
 		var bulletToSpawn = topBulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name, true);
-		GD.Print(bulletToSpawn.Emitter.Name);
-		bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
+		// GD.Print(bulletToSpawn.Emitter.Name);
+		(bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
+		// bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
 		(bullet as Bullet).Scale=speedScale;
 		(bullet as Bullet).TimeSpeed=timeSpeed;
 		return bullet as IBullet;
@@ -104,6 +105,15 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 	{
 		BMLBullet bul = targettedBullet as BMLBullet;
 		return new Vector2(playerRef.GlobalPosition.X, bul.emitter.UseXY?playerRef.GlobalPosition.Y:playerRef.GlobalPosition.Z);
+	}
+
+	public float GetBulletAimDir(IBullet targettedBullet){
+		BMLBullet bul = targettedBullet as BMLBullet;
+		Vector2 playerPos = PlayerPosition(targettedBullet);
+		// Vector2 realPos = new Vector2(bul.X-bul.GlobalPosition.X, bul.Y-(bul.emitter.UseXY?bul.GlobalPosition.Y:bul.GlobalPosition.Z));
+		Vector2 realPos = new Vector2(bul.GlobalPosition.X, bul.emitter.UseXY?bul.GlobalPosition.Y:bul.GlobalPosition.Z);
+		return (playerPos-realPos).Angle();
+
 	}
 
 	public void RemoveBullet(IBullet deadBullet) => (deadBullet as BMLBullet).Vanished=true;

@@ -12,6 +12,7 @@ public partial class BMLBullet : Bullet
     public int damage = 1;
     Vector2 pos;
     bool vanished = false;
+     Vector3 startPos = Vector3.Zero;
     public override float X
     {
         get => pos.X;
@@ -20,7 +21,9 @@ public partial class BMLBullet : Bullet
             pos.X = value;
             bool xy = false;
             if (emitter != null) { xy = emitter.UseXY; }
-            GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
+            // GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
+            GlobalPosition = new Vector3(startPos.X+pos.X, xy ? startPos.Y+pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z :startPos.Z+pos.Y);
+            GD.Print("X"+value+" GlobalP:"+GlobalPosition+" Nanme:"+Name);
         }
     }
     public override float Y
@@ -31,7 +34,9 @@ public partial class BMLBullet : Bullet
             pos.Y = value;
             bool xy = false;
             if (emitter != null) { xy = emitter.UseXY; }
-            GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
+            GlobalPosition = new Vector3(startPos.X+pos.X, xy ? startPos.Y+pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z :startPos.Z+pos.Y);
+            // GlobalPosition = new Vector3(pos.X, xy ? pos.Y : GlobalPosition.Y, xy ? GlobalPosition.Z : pos.Y);
+            GD.Print("Y"+value+" GlobalP:"+GlobalPosition+" Nanme:"+Name);
 
         }
     }
@@ -53,8 +58,5 @@ public partial class BMLBullet : Bullet
         if(lifetime<=0) Vanished=true;
      }
 
-    public void SetStartPos(Vector3 pos){
-        this.X = pos.X;
-        this.Y = emitter.UseXY?pos.Y:pos.Z;
-    }
+    public void SetStartPos(Vector3 pos) => startPos=pos;
 }
