@@ -6,6 +6,7 @@ using Godot;
 public partial class BMLBulletManager:Node3D, IBulletManager{
 	public static BMLBulletManager instance;
 	[Export] public Node3D playerRef;
+	[Export] public PackedScene topBulletRef;
 	public BMLBulletManager(){
 		instance = this; 
 	}
@@ -58,22 +59,26 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// GD.Print(topBullets.Count);
 		foreach(var set in bulletSets){
 			set.Value.ForEach(bullet => {
+				if (bullet.Vanished) return;
 				bullet.Update();
+				bullet.LifeTimeout-=1;
+				if (bullet.LifeTimeout<=0) bullet.Vanished = true;
 				// TODO: PhysicsServer check
 			});
 		}
 		foreach(var set in topBullets){
 			set.Value.ForEach(bullet=>{
+				if (bullet.Vanished) return;
 				bullet.Update();
+				// bullet.lifetime-=1;
+				// if (bullet.lifetime<=0) bullet.Vanished = true;
 			});
 		}
 	}
 
 	// We bending the spec with this one boyos
 	public void AddToQueue(BMLEmitter emitter, PackedScene refScene, string name, bool top=false) {
-		GD.Print("Adding Request from "+emitter.Name);
 		(top?topBulletQueue:bulletQueue).Enqueue(new BulletRequest(emitter,refScene,name));
-		GD.Print("Total in Queue: "+(top?topBulletQueue:bulletQueue).Count);
 	}
 
 	public IBullet CreateBullet()
@@ -81,10 +86,11 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// This will probaly have a race condition
 		var bulletToSpawn = bulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name);
-		// bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
 		(bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
+		(bullet as BMLBullet).Vanished=false;
 		(bullet as Bullet).Scale=speedScale;
 		(bullet as Bullet).TimeSpeed=timeSpeed;
+		(bullet as Bullet).LifeTimeout=(bullet as Bullet).Lifetime;
 		return bullet as IBullet;
 	}
 
@@ -93,11 +99,10 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		// This will probaly have a race condition
 		var bulletToSpawn = topBulletQueue.Dequeue();
 		var bullet = GetBulletNode(bulletToSpawn.Emitter,bulletToSpawn.BulletScene,bulletToSpawn.Name, true);
-		// GD.Print(bulletToSpawn.Emitter.Name);
 		(bullet as BMLBullet).SetStartPos(bulletToSpawn.Emitter.GlobalPosition);
-		// bullet.GlobalPosition = bulletToSpawn.Emitter.GlobalPosition;
 		(bullet as Bullet).Scale=speedScale;
 		(bullet as Bullet).TimeSpeed=timeSpeed;
+		(bullet as BMLBullet).Vanished=false;
 		return bullet as IBullet;
 	}
 
@@ -110,7 +115,6 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 	public float GetBulletAimDir(IBullet targettedBullet){
 		BMLBullet bul = targettedBullet as BMLBullet;
 		Vector2 playerPos = PlayerPosition(targettedBullet);
-		// Vector2 realPos = new Vector2(bul.X-bul.GlobalPosition.X, bul.Y-(bul.emitter.UseXY?bul.GlobalPosition.Y:bul.GlobalPosition.Z));
 		Vector2 realPos = new Vector2(bul.GlobalPosition.X, bul.emitter.UseXY?bul.GlobalPosition.Y:bul.GlobalPosition.Z);
 		return (playerPos-realPos).Angle();
 
@@ -132,7 +136,8 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 		bool newBullet=false;
 		bool newEntry=false;
 		if(refferableSet!=null){
-			var bulletAvailable = refferableSet.Find(bl=>bl.Visible==false && bl.ProcessMode==Node.ProcessModeEnum.Disabled);
+			// var bulletAvailable = refferableSet.Find(bl=>bl.Visible==false && bl.ProcessMode==Node.ProcessModeEnum.Disabled);
+			var bulletAvailable = refferableSet.FirstOrDefault(bl=>bl.Vanished==true);
 			if (bulletAvailable!=null) bullet = bulletAvailable;
 			else newBullet=true; 
 		} else {
@@ -141,11 +146,12 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 			newBullet = true; //No Entry? Probably No Bullet Too.
 		}
 		if (newBullet) {
-			var scene = ResourceLoader.Load<PackedScene>(sceneRef.ResourcePath);
+			// var scene = ResourceLoader.Load<PackedScene>(sceneRef.ResourcePath);
+			var scene = ResourceLoader.Load<PackedScene>(topBullet?topBulletRef.ResourcePath:sceneRef.ResourcePath);
 			sceneRef = scene;
-			GD.Print(sceneRef);
 			bullet = scene.Instantiate() as BMLBullet;
 			this.AddChild(bullet);
+			bullet.Name = emitter.Name+"-"+bulletName;
 			bullet.MyBulletManager = this;
 			bullet.emitter = emitter;
 			refferableSet.Add(bullet);
@@ -167,13 +173,4 @@ public partial class BMLBulletManager:Node3D, IBulletManager{
 	void ColissionCheck(BMLBullet bullet){
 		
 	}
-
-	void Process(float delta){
-		foreach(var set in bulletSets){
-			set.Value.ForEach(b=>{
-				b.Update();
-			});
-		}
-	}
-
 }

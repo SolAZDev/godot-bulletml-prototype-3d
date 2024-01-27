@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cocm7elvcw5tt"]
+[gd_scene load_steps=7 format=3 uid="uid://cocm7elvcw5tt"]
 
 [ext_resource type="Script" path="res://AltExample/BMLBulletManager.cs" id="1_5hjiy"]
 [ext_resource type="PackedScene" uid="uid://dx06ravulaiur" path="res://Example/Player/Player3D.tscn" id="2_sdatu"]
 [ext_resource type="Script" path="res://AltExample/BMLEmitter.cs" id="3_pqa5n"]
+[ext_resource type="Script" path="res://AltExample/RotateWithSpeed.cs" id="3_quv56"]
 [ext_resource type="PackedScene" uid="uid://giyc7txjxh1j" path="res://Example/Bullet/Bullet3D.tscn" id="4_7b5dd"]
 [ext_resource type="Texture2D" uid="uid://df8yamhadj7jv" path="res://Example/Player/textures.png" id="5_cjg0g"]
 
@@ -11,6 +12,7 @@
 [node name="Manager" type="Node3D" parent="." node_paths=PackedStringArray("playerRef")]
 script = ExtResource("1_5hjiy")
 playerRef = NodePath("../Player")
+topBulletRef = ExtResource("4_7b5dd")
 SpaceSpeed = 0.025
 
 [node name="Player" parent="." instance=ExtResource("2_sdatu")]
@@ -20,32 +22,69 @@ movementSpeed = 10.0
 [node name="Camera3D" type="Camera3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0, -1.46888, 2)
 
-[node name="ShooterA" type="Node3D" parent="." node_paths=PackedStringArray("playerInstance")]
+[node name="Node3D" type="Node3D" parent="."]
+script = ExtResource("3_quv56")
+rotationAngle = Vector3(0, 1, 0)
+
+[node name="ShooterA" type="Node3D" parent="Node3D" node_paths=PackedStringArray("playerInstance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 script = ExtResource("3_pqa5n")
 BulletMLFile = "./samples/Basic.xml"
 AutoFire = true
-playerInstance = NodePath("../Player")
+playerInstance = NodePath("../../Player")
 bullets = {
 "default": ExtResource("4_7b5dd")
 }
 
-[node name="Sprite3D" type="Sprite3D" parent="ShooterA"]
+[node name="Sprite3D" type="Sprite3D" parent="Node3D/ShooterA"]
 billboard = 2
 texture = ExtResource("5_cjg0g")
 region_enabled = true
 region_rect = Rect2(20, 2, 16, 16)
 
-[node name="ShooterA2" type="Node3D" parent="." node_paths=PackedStringArray("playerInstance")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, 2)
+[node name="ShooterA2" type="Node3D" parent="Node3D" node_paths=PackedStringArray("playerInstance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
 script = ExtResource("3_pqa5n")
 BulletMLFile = "./samples/Basic.xml"
 AutoFire = true
-playerInstance = NodePath("../Player")
+playerInstance = NodePath("../../Player")
 bullets = {
 "default": ExtResource("4_7b5dd")
 }
 
-[node name="Sprite3D" type="Sprite3D" parent="ShooterA2"]
+[node name="Sprite3D" type="Sprite3D" parent="Node3D/ShooterA2"]
+billboard = 2
+texture = ExtResource("5_cjg0g")
+region_enabled = true
+region_rect = Rect2(20, 2, 16, 16)
+
+[node name="ShooterA3" type="Node3D" parent="Node3D" node_paths=PackedStringArray("playerInstance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, -4.37114e-08)
+script = ExtResource("3_pqa5n")
+BulletMLFile = "./samples/Basic.xml"
+AutoFire = true
+playerInstance = NodePath("../../Player")
+bullets = {
+"default": ExtResource("4_7b5dd")
+}
+
+[node name="Sprite3D" type="Sprite3D" parent="Node3D/ShooterA3"]
+billboard = 2
+texture = ExtResource("5_cjg0g")
+region_enabled = true
+region_rect = Rect2(20, 2, 16, 16)
+
+[node name="ShooterA4" type="Node3D" parent="Node3D" node_paths=PackedStringArray("playerInstance")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 4.37114e-08)
+script = ExtResource("3_pqa5n")
+BulletMLFile = "./samples/Basic.xml"
+AutoFire = true
+playerInstance = NodePath("../../Player")
+bullets = {
+"default": ExtResource("4_7b5dd")
+}
+
+[node name="Sprite3D" type="Sprite3D" parent="Node3D/ShooterA4"]
 billboard = 2
 texture = ExtResource("5_cjg0g")
 region_enabled = true
