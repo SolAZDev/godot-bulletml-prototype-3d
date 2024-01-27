@@ -52,4 +52,7 @@ public interface IBullet
     /// </summary>
     /// <param name="subNode">Sub node that defines this bullet</param>
     void InitNode(BulletMLNode subNode);
+
+    int Lifetime  {get; set;}
+    int LifeTimeout  {get; set;}
 }

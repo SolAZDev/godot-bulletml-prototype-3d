@@ -105,6 +105,9 @@ public abstract partial class Bullet : Node3D, IBullet
 	/// Set this property if you have fast moving enemies or guns and want the bullet pattern to inherit the velocity of the object that fired them.
 	/// </summary>
 	public Vector2 InitialVelocity { get; } = Vector2.Zero;
+
+	public int Lifetime {get;set;} = 120;
+	public int LifeTimeout {get;set;} = 120;
 	#endregion //Properties
 
 	#region Methods
@@ -189,7 +192,6 @@ public abstract partial class Bullet : Node3D, IBullet
 	public void InitNode(BulletMLNode subNode)
 	{
 		Debug.Assert(null != subNode);
-		GD.Print("Starting Node! "+subNode.Name.ToString()+": "+subNode.Label);
 		//clear everything out
 		if(Tasks!=null) Tasks.Clear();
 		else Tasks = new();
